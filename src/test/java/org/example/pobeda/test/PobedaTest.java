@@ -1,34 +1,21 @@
 package org.example.pobeda.test;
 
+import com.codeborne.selenide.Selenide;
 import org.example.pobeda.pages.ReservationPage;
 import org.example.pobeda.pages.StartPage;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-
-import java.time.Duration;
 
 public class PobedaTest {
 
-    private WebDriver driver;
-
     @BeforeEach
     public void beforeEach() {
-        driver = new ChromeDriver();
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5L));
-        driver.manage().window().maximize();
-    }
-
-    @AfterEach
-    public void afterEach() {
-        driver.quit();
+        Selenide.open();
     }
 
     @Test
     public void testCase() {
-        new StartPage(driver).openPage()
+        new StartPage().openPage()
                 .checkTitle()
                 .checkInfoContent()
                 .checkSearchArea()
@@ -39,11 +26,11 @@ public class PobedaTest {
 
     @Test
     public void findReservationTest() {
-        new StartPage(driver).openPage()
+        new StartPage().openPage()
                 .checkTitle()
                 .checkReservationSection()
                 .findReservation("Qwerty", "123456");
-        new ReservationPage(driver).openPage()
+        new ReservationPage().openPage()
                 .checkErrorMsg();
     }
 }

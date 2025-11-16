@@ -1,34 +1,27 @@
 package org.example.pobeda.pages;
 
-import org.junit.jupiter.api.Assertions;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
+import com.codeborne.selenide.Condition;
+import com.codeborne.selenide.Selenide;
+import com.codeborne.selenide.SelenideElement;
+import org.openqa.selenium.By;
+
+import static com.codeborne.selenide.Selenide.$;
 
 public class ReservationPage {
 
-    private WebDriver driver;
+    
+    private final SelenideElement agreeCheckbox = $(By.xpath("//input[@type='checkbox']/following-sibling::span"));
 
-    @FindBy(xpath = "//input[@type='checkbox']/following-sibling::span")
-    private WebElement agreeCheckbox;
+    private final SelenideElement searchBtn = $("button.btn_search");
 
-    @FindBy(css = "button.btn_search")
-    private WebElement searchBtn;
+    private final SelenideElement errorMsg = $(By.xpath("//div[text()='Заказ с указанными параметрами не найден']"));
 
-    @FindBy(xpath = "//div[text()='Заказ с указанными параметрами не найден']")
-    private WebElement errorMsg;
-
-    public ReservationPage(WebDriver driver) {
-        this.driver = driver;
-        PageFactory.initElements(driver, this);
-    }
 
     public ReservationPage openPage() {
-        String original = driver.getWindowHandle();
-        for (String handle: driver.getWindowHandles()) {
+        String original = Selenide.webdriver().driver().getWebDriver().getWindowHandle();
+        for (String handle: Selenide.webdriver().driver().getWebDriver().getWindowHandles()) {
             if (!handle.equals(original)) {
-                driver.switchTo().window(handle);
+                Selenide.switchTo().window(handle);
                 break;
             }
         }
@@ -38,6 +31,6 @@ public class ReservationPage {
     public void checkErrorMsg() {
         agreeCheckbox.click();
         searchBtn.click();
-        Assertions.assertTrue(errorMsg.isDisplayed());
+        errorMsg.shouldBe(Condition.visible);
     }
 }

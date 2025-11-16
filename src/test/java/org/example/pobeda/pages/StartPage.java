@@ -1,124 +1,101 @@
 package org.example.pobeda.pages;
 
-import org.junit.jupiter.api.Assertions;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.devtools.v140.autofill.model.Address;
-import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
+import com.codeborne.selenide.Condition;
+import com.codeborne.selenide.Selenide;
+import com.codeborne.selenide.SelenideElement;
+import org.openqa.selenium.By;
 
-import java.util.List;
-import java.util.Objects;
+import java.time.Duration;
+
+import static com.codeborne.selenide.Selenide.$;
 
 public class StartPage {
 
-    private WebDriver driver;
+    private final String URL = "https://www.flypobeda.ru/";
 
-    @FindBy(css = "a > img[src*='logo']")
-    private List<WebElement> logo;
+    private final long elementTimeOut = 3L;
 
-    @FindBy(xpath = "//h2[text()='Авиакомпания «Победа» - купить билеты на самолёт дешево онлайн, прямые и трансферные рейсы']")
-    private WebElement title;
+    private final SelenideElement logo = $(By.cssSelector("a > img[src*='logo']"));
 
-    @FindBy(xpath = "//a[@href='/information']")
-    private WebElement information;
+    private final SelenideElement title = $(By.xpath("//h2[text()='Авиакомпания «Победа» - купить билеты на самолёт дешево онлайн, прямые и трансферные рейсы']"));
 
-    @FindBy(css = "//a[text()='Подготовка к полёту']")
-    private WebElement gettingReadyToFlight;
+    private final SelenideElement information = $(By.xpath("//a[@href='/information']"));
 
-    @FindBy(css = "//a[text()='Полезная информация']")
-    private WebElement usefulInfo;
+    private final SelenideElement gettingReadyToFlight = $(By.xpath("//a[text()='Подготовка к полёту']"));
 
-    @FindBy(css = "//a[text()='О компании']")
-    private WebElement aboutCompany;
+    private final SelenideElement usefulInfo = $(By.xpath("//a[text()='Полезная информация']"));
 
-    @FindBy(xpath = "//button[.='Поиск']")
-    private WebElement searchBtn;
+    private final SelenideElement aboutCompany = $(By.xpath("//a[text()='О компании']"));
 
-    @FindBy(xpath = "//input[@placeholder='Откуда' and @readonly]/following-sibling::*")
-    private WebElement departureCityInput;
+    private final SelenideElement searchBtn = $(By.xpath("//button[.='Поиск']"));
 
-    @FindBy(xpath = "//input[@placeholder='Куда' and @readonly]/following-sibling::*")
-    private WebElement arrivalCityInput;
+    private final SelenideElement departureCityInput = $(By.xpath("//input[@placeholder='Откуда' and @readonly]/following-sibling::*"));
 
-    @FindBy(xpath = "(//input[@placeholder='Туда' and @readonly]/parent::div)[2]")
-    //Их почему-то 2 и они абсолютно одинаковые, тольк id разные, но сгенеренные
-    private WebElement departureDate;
+    private final SelenideElement arrivalCityInput = $(By.xpath("//input[@placeholder='Куда' and @readonly]/following-sibling::*"));
 
-    @FindBy(xpath = "(//input[@placeholder='Обратно' and @readonly])[2]")
-    private WebElement arrivalDate;
+    private final SelenideElement departureDate = $(By.xpath("(//input[@placeholder='Туда' and @readonly]/parent::div)[2]"));
 
-    @FindBy(xpath = "//button/span[text()='Управление бронированием'][1]")
-    private WebElement manageReservation;
+    private final SelenideElement arrivalDate = $(By.xpath("(//input[@placeholder='Обратно' and @readonly])[2]"));
 
-    @FindBy(xpath = "//input[@placeholder='Фамилия клиента']")
-    private WebElement inputMiddleName;
+    private final SelenideElement manageReservation = $(By.xpath( "//button/span[text()='Управление бронированием'][1]"));
 
-    @FindBy(xpath = "//input[@placeholder='Номер бронирования или билета']")
-    private WebElement inputReservationNum;
+    private final SelenideElement inputMiddleName = $(By.xpath("//input[@placeholder='Фамилия клиента']"));
 
+    private final SelenideElement inputReservationNum = $(By.xpath("//input[@placeholder='Номер бронирования или билета']"));
 
-    public StartPage(WebDriver driver) {
-        this.driver = driver;
-        PageFactory.initElements(driver, this);
-    }
 
     public StartPage openPage() {
-        driver.get("https://www.flypobeda.ru/");
+        Selenide.open(URL);
         return this;
     }
 
     public StartPage chooseDepartureCity(String cityName) {
-        departureCityInput.click();
-        return new FindCityDialogWindow(driver).inputCity(cityName);
+        departureCityInput.hover().click();
+        return new FindCityDialogWindow().inputCity(cityName);
     }
 
     public StartPage chooseArrivalCity(String cityName) {
         arrivalCityInput.click();
-        return new FindCityDialogWindow(driver).inputCity(cityName);
+        return new FindCityDialogWindow().inputCity(cityName);
     }
 
     public StartPage checkTitle() {
-        Assertions.assertTrue(title.isDisplayed());
-        Assertions.assertFalse(logo.isEmpty());
+        title.shouldBe(Condition.visible);
+        logo.shouldBe(Condition.visible);
         return this;
     }
 
     public StartPage checkInfoContent() {
-        Actions action = new Actions(driver);
-        action.moveToElement(information).perform();
-        Assertions.assertTrue(gettingReadyToFlight.isDisplayed());
-        Assertions.assertTrue(usefulInfo.isDisplayed());
-        Assertions.assertTrue(aboutCompany.isDisplayed());
+        information.hover();
+        gettingReadyToFlight.shouldBe(Condition.visible, Duration.ofSeconds(elementTimeOut));
+        usefulInfo.shouldBe(Condition.visible, Duration.ofSeconds(elementTimeOut));
+        aboutCompany.shouldBe(Condition.visible);
         return this;
     }
 
     public StartPage checkSearchArea() {
-        new Actions(driver).scrollToElement(departureCityInput);
-        Assertions.assertTrue(departureCityInput.isDisplayed());
-        Assertions.assertTrue(arrivalCityInput.isDisplayed());
-        Assertions.assertTrue(departureDate.isDisplayed());
-        Assertions.assertTrue(arrivalDate.isDisplayed());
+        departureCityInput.scrollTo();
+        departureCityInput.shouldBe(Condition.visible);
+        arrivalCityInput.shouldBe(Condition.visible);
+        departureDate.shouldBe(Condition.visible);
+        arrivalDate.shouldBe(Condition.visible);
         return this;
     }
 
-    public StartPage submitAndError() {
+    public void submitAndError() {
         searchBtn.click();
-        Assertions.assertEquals("true", departureDate.getAttribute("data-failed"));
-        return this;
+        departureDate.shouldBe(Condition.attribute("data-failed", "true"));
     }
 
     public StartPage checkReservationSection() {
-        new Actions(driver).scrollToElement(manageReservation).perform();
-        manageReservation.click();
-        Assertions.assertTrue(inputMiddleName.isDisplayed());
-        Assertions.assertTrue(inputReservationNum.isDisplayed());
+        manageReservation.scrollTo().click();
+        inputMiddleName.shouldBe(Condition.visible);
+        inputReservationNum.shouldBe(Condition.visible);
         return this;
     }
 
     public void findReservation(String middleName, String number) {
-        inputMiddleName.sendKeys(middleName);
+        inputMiddleName.setValue(middleName);
         inputReservationNum.sendKeys(number);
         searchBtn.click();
     }
