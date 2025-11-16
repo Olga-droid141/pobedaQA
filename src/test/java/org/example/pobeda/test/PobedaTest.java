@@ -1,5 +1,6 @@
 package org.example.pobeda.test;
 
+import org.example.pobeda.pages.ReservationPage;
 import org.example.pobeda.pages.StartPage;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,5 +35,15 @@ public class PobedaTest {
                 .chooseDepartureCity("Москва")
                 .chooseArrivalCity("Санкт-Петербург")
                 .submitAndError();
+    }
+
+    @Test
+    public void findReservationTest() {
+        new StartPage(driver).openPage()
+                .checkTitle()
+                .checkReservationSection()
+                .findReservation("Qwerty", "123456");
+        new ReservationPage(driver).openPage()
+                .checkErrorMsg();
     }
 }
