@@ -21,7 +21,6 @@ public class StartPage {
     @FindBy(css = "*:has(> input[placeholder='Туда']) > div > svg")
     private WebElement departureDate;
 
-    private String jsScript = ""
 
     public StartPage(WebDriver driver) {
         this.driver = driver;
