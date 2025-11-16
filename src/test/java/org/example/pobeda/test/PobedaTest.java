@@ -28,9 +28,7 @@ public class PobedaTest {
     @Test
     public void testCase() {
         new StartPage(driver).openPage()
-                .chooseDepartureCity("Москва")
-                .next()
-                .chooseAvailableAndNext()
-                .checkTitlePresents();
+                .checkTitle()
+                .checkInfoContent();
     }
 }
