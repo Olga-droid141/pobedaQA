@@ -49,6 +49,15 @@ public class StartPage {
     @FindBy(xpath = "(//input[@placeholder='Обратно' and @readonly])[2]")
     private WebElement arrivalDate;
 
+    @FindBy(xpath = "//button/span[text()='Управление бронированием'][1]")
+    private WebElement manageReservation;
+
+    @FindBy(xpath = "//input[@placeholder='Фамилия клиента']")
+    private WebElement inputMiddleName;
+
+    @FindBy(xpath = "//input[@placeholder='Номер бронирования или билета']")
+    private WebElement inputReservationNum;
+
 
     public StartPage(WebDriver driver) {
         this.driver = driver;
@@ -98,5 +107,19 @@ public class StartPage {
         searchBtn.click();
         Assertions.assertEquals("true", departureDate.getAttribute("data-failed"));
         return this;
+    }
+
+    public StartPage checkReservationSection() {
+        new Actions(driver).scrollToElement(manageReservation).perform();
+        manageReservation.click();
+        Assertions.assertTrue(inputMiddleName.isDisplayed());
+        Assertions.assertTrue(inputReservationNum.isDisplayed());
+        return this;
+    }
+
+    public void findReservation(String middleName, String number) {
+        inputMiddleName.sendKeys(middleName);
+        inputReservationNum.sendKeys(number);
+        searchBtn.click();
     }
 }
